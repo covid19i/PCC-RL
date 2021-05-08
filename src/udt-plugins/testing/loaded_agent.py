@@ -77,6 +77,9 @@ class LoadedModel():
             [tf.saved_model.tag_constants.SERVING], self.model_path)
  
     def act(self, obs, stochastic=False):
+        #When applying RL to a custom problem, you should always normalize the input 
+        #to the agent (e.g. using VecNormalizefor PPO2/A2C)
+        #says https://readthedocs.org/projects/stable-baselines/downloads/pdf/master/ 
         input_dict = {self.input_obs_label:obs}
         #input_dict = {self.input_obs_label:obs}
         #print("in LoadedModel.act() input_dict: \n" + str(input_dict))

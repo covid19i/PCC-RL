@@ -23,6 +23,7 @@ from stable_baselines import PPO1, PPO2
 import os
 import sys
 import inspect
+from stable_baselines.common.env_checker import check_env
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -39,12 +40,15 @@ print("Architecture for vf and pi is: %s" % str(arch))
 #https://stable-baselines.readthedocs.io/en/master/_modules/stable_baselines/common/policies.html#LstmPolicy
 #Also, LSTMs are not supported in the shared part
 net_arch = [64, 64, 'lstm', {"pi":arch, "vf":arch}]
-lstm_dim = 64
+lstm_dim = 64#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64 
 print("Overall architecture is: %s" % str(net_arch))
 print("LSTM dimenstion: %s" % str(lstm_dim))
 
 training_sess = None
 
+#https://stable-baselines.readthedocs.io/en/master/guide/examples.html#recurrent-policies
+#One current limitation of recurrent policies is that you must test them with 
+#the same number of environments they have been trained on.
 #/home/ubuntu/environments/my_env/lib/python3.5/site-packages/stable_baselines/common/policies.py
 #https://stable-baselines.readthedocs.io/en/master/guide/custom_policy.html
 class MyLstmPolicy(LstmPolicy):
@@ -72,7 +76,9 @@ class CustomLSTMPolicy(LstmPolicy):
 
 
 env = gym.make('PccNs-v0')
-print("Number of environments used for training (env.num_envs): " + str(env.num_envs))
+check_env(env)
+#AttributeError: 'SimulatedNetworkEnv' object has no attribute 'num_envs'
+#print("Number of environments used for training (env.num_envs): " + str(env.num_envs))
 #env = gym.make('CartPole-v0')
 
 gamma = arg_or_default("--gamma", default=0.99)
@@ -82,8 +88,12 @@ print("gamma = %f" % gamma)
 #PPO1 can't be used with Recurrent
 #In Algo 1 of paper: T is timesteps_per_actorbatch, M = optim_batchsize << NT.
 #model = PPO1(MyLstmPolicy, env, verbose=1, schedule='constant', timesteps_per_actorbatch=8192, optim_batchsize=2048, gamma=gamma)
+
+#nminibatches – (int) Number of training minibatches per update. For recurrent policies, 
+#the number of environments run in parallel should be a multiple of nminibatches.
 #https://stable-baselines.readthedocs.io/en/master/modules/ppo2.html?highlight=ppo2
-model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=2048, gamma=gamma)
+#don’t forget to take the hyperparameters from the RL zoo for continuousactions problems - https://readthedocs.org/projects/stable-baselines/downloads/pdf/master/
+model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=20, gamma=gamma)
 
 
 #Stable Baselines 3 tutorial
@@ -140,3 +150,5 @@ with model.graph.as_default():
         signature_def_map=signature_map,
         clear_devices=True)
     model_builder.save(as_text=True)#as_text = True not to be done in Prod
+    
+env.close()
