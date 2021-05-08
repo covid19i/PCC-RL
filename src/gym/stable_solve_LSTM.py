@@ -19,7 +19,8 @@ import tensorflow as tf
 from stable_baselines.common.policies import LstmPolicy
 #to try after LstmPolicy
 from stable_baselines.common.policies import MlpLstmPolicy, MlpLnLstmPolicy
-from stable_baselines import PPO1, PPO2
+#from stable_baselines import PPO1
+from stable_baselines import PPO2
 import os
 import sys
 import inspect
