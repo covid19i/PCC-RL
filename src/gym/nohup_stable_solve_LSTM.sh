@@ -1,5 +1,4 @@
 #! /bin/bash
-cd /home/ubuntu/PCC-RL/src/gym
 source /home/ubuntu/environments/my_env/bin/activate
 
 RUN_NAME="LSTM_run2_1600x410_2048_1_lstm_dim_64"
