@@ -40,7 +40,7 @@ print("Architecture for vf and pi is: %s" % str(arch))
 #https://stable-baselines.readthedocs.io/en/master/_modules/stable_baselines/common/policies.html#LstmPolicy
 #Also, LSTMs are not supported in the shared part
 net_arch = [64, 64, 'lstm', {"pi":arch, "vf":arch}]
-lstm_dim = 64#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64 
+lstm_dim = 256#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64 
 print("Overall architecture is: %s" % str(net_arch))
 print("LSTM dimenstion: %s" % str(lstm_dim))
 
@@ -93,7 +93,7 @@ print("gamma = %f" % gamma)
 #the number of environments run in parallel should be a multiple of nminibatches.
 #https://stable-baselines.readthedocs.io/en/master/modules/ppo2.html?highlight=ppo2
 #don’t forget to take the hyperparameters from the RL zoo for continuousactions problems - https://readthedocs.org/projects/stable-baselines/downloads/pdf/master/
-model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=20, gamma=gamma)
+model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=2048, gamma=gamma)
 
 
 #Stable Baselines 3 tutorial
