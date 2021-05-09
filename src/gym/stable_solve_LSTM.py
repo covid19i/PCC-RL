@@ -40,7 +40,15 @@ print("Architecture for vf and pi is: %s" % str(arch))
 #64, 64 is (sort of) the default for the shared layers in LstmPolicy according to 
 #https://stable-baselines.readthedocs.io/en/master/_modules/stable_baselines/common/policies.html#LstmPolicy
 #Also, LSTMs are not supported in the shared part
-net_arch = [64, 64, 'lstm', {"pi":arch, "vf":arch}]
+shared_arch_str = arg_or_default("--shared_arch", default="64,64")
+if shared_arch_str == "":
+    shared_arch = []
+else:
+    shared_arch = [int(layer_width) for layer_width in shared_arch_str.split(",")]
+shared_arch.append('lstm')
+print("Shared Architecture for vf and pi is: %s" % str(shared_arch))
+net_arch = shared_arch.copy()
+net_arch.append({"pi":arch, "vf":arch})
 lstm_dim = arg_or_default("--lstm_dim", default=64)#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64
 no_of_timesteps = arg_or_default("--no_of_timesteps", default=2048)
 no_of_training_loops = arg_or_default("--no_of_training_loops", default=6)
