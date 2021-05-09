@@ -22,6 +22,7 @@ class LoadedModel():
         self.sess = tf.Session()
         #print("self.sess: " + str(self.sess))
         self.model_path = model_path
+        print("Model path set to " + str(model_path) + "\nNow, attempting to load the model...")
         self.metagraph = tf.saved_model.loader.load(self.sess,
             [tf.saved_model.tag_constants.SERVING], self.model_path)
         #print("self.metagraph: " + str(self.metagraph))
@@ -49,7 +50,7 @@ class LoadedModel():
             dim_2 = int(lines[4].split(":")[1].strip(" "))
             print("dim_1: " + str(dim_1) + "\tdim_2: " + str(dim_2) + "\n")
             self.initial_state = np.zeros((dim_1, dim_2), dtype=np.float32)
-            self.state = np.zeros((1, 128), dtype=np.float32)
+            self.state = np.zeros((dim_1, dim_2), dtype=np.float32)
         else:
             print("Exiting because state couldn't be found with a Recurrent Policy in use.")
             sys.exit()
@@ -66,6 +67,8 @@ class LoadedModel():
         if "mask" in input_dict.keys():
             #replace looks fishy. Remove if it doesn't work.
             self.input_mask_label = input_dict["mask"].name.replace("train_model/", "")
+            #What to put here??????????????? None, 1, dynamic?????
+            #self.mask = np.ones((1, 1)).reshape((1,))
             self.mask = np.ones(( 1 ))
         self.printed_input_dict = 0
 

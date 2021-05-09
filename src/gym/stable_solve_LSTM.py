@@ -41,9 +41,15 @@ print("Architecture for vf and pi is: %s" % str(arch))
 #https://stable-baselines.readthedocs.io/en/master/_modules/stable_baselines/common/policies.html#LstmPolicy
 #Also, LSTMs are not supported in the shared part
 net_arch = [64, 64, 'lstm', {"pi":arch, "vf":arch}]
-lstm_dim = 256#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64 
+lstm_dim = arg_or_default("--lstm_dim", default=64)#no of parameters = 4(𝑛𝑚+𝑛^2+𝑛) = 33k for dim = 64
+no_of_timesteps = arg_or_default("--no_of_timesteps", default=2048)
+no_of_training_loops = arg_or_default("--no_of_training_loops", default=6)
+RUN_ID = arg_or_default("--RUN_ID")
 print("Overall architecture is: %s" % str(net_arch))
 print("LSTM dimenstion: %s" % str(lstm_dim))
+print("Number of timesteps in each episode: %s" % str(no_of_timesteps))
+print("Number of loops: %s" % str(no_of_training_loops))
+print("RUN_ID: %s" % str(RUN_ID))
 
 training_sess = None
 
@@ -66,16 +72,6 @@ class MyLstmPolicy(LstmPolicy):
         global training_sess
         training_sess = sess
 
-#https://stable-baselines.readthedocs.io/en/master/guide/custom_policy.html
-class CustomLSTMPolicy(LstmPolicy):
-    def __init__(self, sess, ob_space, ac_space, n_env, n_steps, n_batch, n_lstm=lstm_dim, reuse=False, **_kwargs):
-        super().__init__(sess, ob_space, ac_space, n_env, n_steps, n_batch, n_lstm, reuse,
-                         net_arch=[8, 'lstm', dict(vf=[5, 10], pi=[10])],
-                         layer_norm=True, feature_extraction="mlp", **_kwargs)
-        global training_sess
-        training_sess = sess
-
-
 env = gym.make('PccNs-v0')
 check_env(env)
 #AttributeError: 'SimulatedNetworkEnv' object has no attribute 'num_envs'
@@ -94,12 +90,12 @@ print("gamma = %f" % gamma)
 #the number of environments run in parallel should be a multiple of nminibatches.
 #https://stable-baselines.readthedocs.io/en/master/modules/ppo2.html?highlight=ppo2
 #don’t forget to take the hyperparameters from the RL zoo for continuousactions problems - https://readthedocs.org/projects/stable-baselines/downloads/pdf/master/
-model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=2048, gamma=gamma)
+model = PPO2(MyLstmPolicy, env, verbose=1, nminibatches = 1, n_steps=no_of_timesteps, gamma=gamma)
 
 
 #Stable Baselines 3 tutorial
 #https://github.com/araffin/rl-tutorial-jnrr19
-for i in range(0, 6):
+for i in range(0, no_of_training_loops):
     with model.graph.as_default():                                                                   
         saver = tf.train.Saver()                                                     
         saver.save(training_sess, "./pcc_model_%d.ckpt" % i)
