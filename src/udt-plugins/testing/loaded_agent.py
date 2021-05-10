@@ -15,6 +15,7 @@
 import tensorflow as tf
 import numpy as np
 import io
+import sys
 
 class LoadedModel():
 
@@ -51,9 +52,9 @@ class LoadedModel():
             print("dim_1: " + str(dim_1) + "\tdim_2: " + str(dim_2) + "\n")
             self.initial_state = np.zeros((dim_1, dim_2), dtype=np.float32)
             self.state = np.zeros((dim_1, dim_2), dtype=np.float32)
-        else:
-            print("Exiting because state couldn't be found with a Recurrent Policy in use.")
-            sys.exit()
+        #else:
+            #print("Exiting because state couldn't be found with a Recurrent Policy in use.")
+            #sys.exit()
  
         self.output_act_label = output_dict["act"].name
         print("output_act_label: " + str(self.output_act_label))
