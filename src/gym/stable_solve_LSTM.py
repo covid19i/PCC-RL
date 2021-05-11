@@ -25,11 +25,11 @@ import os
 import sys
 import inspect
 from stable_baselines.common.env_checker import check_env
+from common.simple_arg_parse import arg_or_default
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir) 
-from common.simple_arg_parse import arg_or_default
 
 arch_str = arg_or_default("--arch", default="32,16")
 if arch_str == "":
