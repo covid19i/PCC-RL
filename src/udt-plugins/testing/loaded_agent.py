@@ -28,14 +28,14 @@ class LoadedModel():
             [tf.saved_model.tag_constants.SERVING], self.model_path)
         #print("self.metagraph: " + str(self.metagraph))
         sig = self.metagraph.signature_def["serving_default"]
-        print("Signature of the model: " + str(sig))
+        #print("Signature of the model: " + str(sig))
         input_dict = dict(sig.inputs)
         #print("input_dict of the model: " + str(input_dict))
         output_dict = dict(sig.outputs)    
         #print("output_dict of the model: " + str(output_dict))   
  
         self.input_obs_label = input_dict["ob"].name
-        print("input_obs_label: " + str(self.input_obs_label))
+        #print("input_obs_label: " + str(self.input_obs_label))
         self.input_state_label = None
         self.initial_state = None
         self.state = None
@@ -43,9 +43,9 @@ class LoadedModel():
             #replace looks fishy. Remove if it doesn't work.
             self.input_state_label = input_dict["state"].name.replace("train_model/", "")
             strfile = io.StringIO()
-            print(input_dict["state"].tensor_shape, file=strfile)
-            print("state: shape:")
-            print(input_dict["state"].tensor_shape)
+            #print(input_dict["state"].tensor_shape, file=strfile)
+            #print("state: shape:")
+            #print(input_dict["state"].tensor_shape)
             lines = strfile.getvalue().split("\n")
             dim_1 = int(lines[1].split(":")[1].strip(" "))
             dim_2 = int(lines[4].split(":")[1].strip(" "))
@@ -57,11 +57,11 @@ class LoadedModel():
             #sys.exit()
  
         self.output_act_label = output_dict["act"].name
-        print("output_act_label: " + str(self.output_act_label))
+        #print("output_act_label: " + str(self.output_act_label))
         self.output_stochastic_act_label = None
         if "stochastic_act" in output_dict.keys():
             self.output_stochastic_act_label = output_dict["stochastic_act"].name
-        print("stochastic_act_label: " + str(self.output_stochastic_act_label))
+        #print("stochastic_act_label: " + str(self.output_stochastic_act_label))
 
         self.mask = None
         self.input_mask_label = None 
@@ -93,7 +93,7 @@ class LoadedModel():
         if self.mask is not None:
             input_dict[self.input_mask_label] = self.mask
         if(self.printed_input_dict == 0):
-            print("in LoadedModel.act() input_dict after state, mask added: \n" + str(input_dict))
+            #print("in LoadedModel.act() input_dict after state, mask added: \n" + str(input_dict))
             self.printed_input_dict = 1
 
         sess_output = None
