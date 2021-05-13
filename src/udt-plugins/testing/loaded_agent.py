@@ -121,8 +121,8 @@ class LoadedModelAgent():
 
     def act(self, ob):
         #stochastic = False???
-        if(self.model.printed_input_dict == 0):
-            print("observations: " + str(ob))
+        #if(self.model.printed_input_dict == 0):
+        #    print("observations: " + str(ob))
         act_dict = self.model.act(ob.reshape(1,-1), stochastic=False)
 
         ac = act_dict["act"]
