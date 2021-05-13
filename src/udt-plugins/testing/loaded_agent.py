@@ -47,11 +47,14 @@ class LoadedModel():
             #print("state: shape:")
             #print(input_dict["state"].tensor_shape)
             lines = strfile.getvalue().split("\n")
-            dim_1 = int(lines[1].split(":")[1].strip(" "))
-            dim_2 = int(lines[4].split(":")[1].strip(" "))
-            print("dim_1: " + str(dim_1) + "\tdim_2: " + str(dim_2) + "\n")
+            #dim_1 = int(lines[1].split(":")[1].strip(" "))
+            #dim_2 = int(lines[4].split(":")[1].strip(" "))
+            #print("dim_1: " + str(dim_1) + "\tdim_2: " + str(dim_2) + "\n")
+            dim_1 = 1
+            dim_2 = 128#dim_2 = 2 * (LSTM_DIM)
             self.initial_state = np.zeros((dim_1, dim_2), dtype=np.float32)
             self.state = np.zeros((dim_1, dim_2), dtype=np.float32)
+            
         #else:
             #print("Exiting because state couldn't be found with a Recurrent Policy in use.")
             #sys.exit()
