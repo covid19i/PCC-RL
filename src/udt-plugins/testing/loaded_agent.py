@@ -23,7 +23,7 @@ class LoadedModel():
         self.sess = tf.Session()
         #print("self.sess: " + str(self.sess))
         self.model_path = model_path
-        print("Model path set to " + str(model_path) + "\nNow, attempting to load the model...")
+        print("\n\nModel path set to " + str(model_path) + "\nNow, attempting to load the model...")
         self.metagraph = tf.saved_model.loader.load(self.sess,
             [tf.saved_model.tag_constants.SERVING], self.model_path)
         #print("self.metagraph: " + str(self.metagraph))
