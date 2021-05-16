@@ -23,7 +23,7 @@ repo for using congestion control algorithms with Python modules, and see
 ./src/gym/online/README.md for additional instructions regarding testing or training models in the real world.
 
 
-#Installation and sequence of instructions
+## Installation and sequence of instructions
 
 For installation (on AWS Ubuntu 18.04 image):
 sudo add-apt-repository ppa:deadsnakes/ppa
